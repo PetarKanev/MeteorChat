@@ -1,0 +1,189 @@
+<head>
+  <title></title>
+</head>
+
+<body>
+ 
+</body>
+
+<template name="navigation">
+	<ul style="margin-bottom: 0">
+    {{#if currentUser}}
+	  <li>Welcome {{currentUser.username}} 
+    
+    <br> 
+
+    <a href="{{pathFor route='home'}}">Home</a> | <a href="{{pathFor route='account'}}" class="account">Account</a> | <a href="{{pathFor route='login'}}" class="logout">Logout</a></li>  
+	  {{/if}}
+	</ul>
+
+</template>
+
+<template name="register">
+    <div class="login-page">
+
+      <h2>Register</h2>
+
+      <form class="register">
+          <p>Email: <input type="email" name="email" required></p>
+  	      <p>Username: <input type="text" name="user"></p>
+          <p>Password: <input type="password" name="password" required></p>
+          <p><input type="submit" value="Register"></p>
+      </form>
+
+      <p> Already signed up? <a href="{{pathFor 'login'}}">Login</a> here.</p>
+
+    </div>
+</template>
+
+<template name="login">
+    <div class="login-page">
+      <h2>Login</h2>
+
+      <form class="login">
+          <p>Username: <input type="text" name="user"></p>
+          <p>Password: <input type="password" name="password" required></p>
+          <p><input type="submit" value="Login"></p>
+      </form>
+
+      <br><br>
+
+      <p> Or <a href="{{pathFor 'register'}}">Register</a> now!</p>
+
+    </div>
+</template>
+
+<template name="account">
+    <div class="login-page">
+      <h2>Account Settings</h2>
+
+      <form class="login">
+          <p>Current Username: {{currentUser.username}} </p>
+          <p>Current Email: {{currentUser.emails.[0].address}} </p>
+          
+          {{#if isVerified}}
+            <p id="verified"> Email has been verified!</p>
+
+          {{else}}
+
+            <p id="notVerified"> Email has not been verified!</p>
+
+          {{/if}} 
+
+          <!--<p>Password: <input type="password" name="password" required></p>
+          <p><input type="submit" value="Save Changes"></p>-->
+      </form>
+
+    </div>
+</template>
+
+<template name="home">
+
+    <div class = "header">
+      <h1>Welcome</h1>
+    </div>
+
+    <div class="search">
+      <strong>Search:</strong> {{> searchBox}}
+    </div>
+
+    <div class="messages">
+        {{> input }}
+        {{> messages }}
+    </div>
+
+    <div class="recent-messages">
+        {{> recent}}
+    </div>
+
+</template>
+
+<template name="main">
+    <h1></h1>
+    
+    <div class="navigation">
+      {{#if currentUser}}
+          {{> navigation}}
+      {{/if}}
+    </div>
+
+      {{> yield}}
+    
+    <div class="footer">
+      <p>Copyright &copy; Petar Kanev, 2016.</p>
+    </div>
+
+</template>
+
+<!-- List all items -->
+<template name="collections">
+    <ul>
+        <span id="onlineUser">
+        
+        {{#each online}}
+          {{> collection}}
+        {{/each}}
+        
+        </span>
+
+        <span id="offlineUser">
+        
+        {{#each collections}}
+          {{> collection}}
+        {{/each}}
+        
+        </span>
+    </ul>
+</template> 
+
+<template name="collection">
+  <li> 
+    <!--<span class="collections">{{username}}</span>-->
+    <span class="collections">{{username}}</span>
+  </li>
+</template> 
+
+<template name="searchBox">
+    {{> EasySearch.Input index=collectionIndex attributes=inputAttributes}}
+    
+    {{#EasySearch.IfInputEmpty index=collectionIndex}}
+    
+      {{> collections}}
+    
+        {{else}}
+
+    <ul>
+        {{#EasySearch.Each index=collectionIndex }}
+            
+            <li><a>{{username}}</a></li>
+        
+        {{/EasySearch.Each}}
+    </ul>
+    
+
+
+    {{/EasySearch.IfInputEmpty}}
+
+</template>
+
+<template name="recent">
+  
+  <h3> Recent chats</h3> <br>
+
+  {{#each msgsAll}}
+    <strong>{{name}}:</strong> {{text}} <span id="timestamp">{{createdAt}}</span> <br><br>
+  {{/each}}
+
+</template>
+
+<template name="messages">
+  {{#each msgs}}
+  
+    <strong>{{name}}:</strong> {{text}} <span id="timestamp">{{createdAt}}</span><br>
+  
+  {{/each}}
+</template>
+
+<template name="input">
+  <p>Message: <input type="text" id="message"></p>
+</template>
